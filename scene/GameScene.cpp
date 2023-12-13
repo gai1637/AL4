@@ -2,6 +2,8 @@
 #include "TextureManager.h"
 #include <cassert>
 #include"Player.h"
+#include"Skydome.h"
+#include"Ground.h"
 
 GameScene::GameScene() {}
 
@@ -12,9 +14,18 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+	viewProjection_.farZ = 2000;
+	viewProjection_.translation_.y = 5;
+	viewProjection_.Initialize();
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
+
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize();
+
+	ground_ = std::make_unique<Ground>();
+	ground_->Initialize();
 }
 
 void GameScene::Update() {}
@@ -47,6 +58,8 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	player_->Draw();
+	skydome_->Draw(viewProjection_);
+	ground_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

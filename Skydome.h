@@ -8,19 +8,8 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include<memory>
-class Player {
-private:
-	
-	std::unique_ptr<Model> model_ = nullptr;
-	WorldTransform worldTransform_;
-	ViewProjection viewProjection_;
-
+class Skydome {
 public:
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~Player();
-
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -34,5 +23,10 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(ViewProjection &viewprojection_);
+
+private:
+	WorldTransform worldTransform_;
+	std::unique_ptr<Model> model_=nullptr;
+	
 };
