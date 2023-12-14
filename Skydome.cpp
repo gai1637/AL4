@@ -5,6 +5,7 @@ void Skydome::Initialize() {
 	worldTransform_.Initialize();
 	
 }
+void Skydome::Update() { worldTransform_.UpdateMatrix(); }
 void Skydome::Draw(ViewProjection &viewprojection_) { 
 	model_->Draw(worldTransform_, viewprojection_);
 }

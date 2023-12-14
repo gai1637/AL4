@@ -13,7 +13,7 @@ private:
 	
 	std::unique_ptr<Model> model_ = nullptr;
 	WorldTransform worldTransform_;
-	ViewProjection viewProjection_;
+	const ViewProjection* viewProjection_ = nullptr;
 
 public:
 	/// <summary>
@@ -34,5 +34,11 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(const ViewProjection &viewprojection);
+
+	void SetViewProjection(const ViewProjection* viewProjection) {
+		viewProjection_ = viewProjection;
+	}
+
+	const WorldTransform &GetWorldTransform() { return worldTransform_; }
 };

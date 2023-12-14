@@ -4,6 +4,7 @@ void Ground::Initialize() {
 	model_.reset(Model::CreateFromOBJ("ground",true));
 	worldTransform_.Initialize();
 }
+void Ground::Update() { worldTransform_.UpdateMatrix(); }
 void Ground::Draw(ViewProjection& viewprojection_) {
 	model_->Draw(worldTransform_, viewprojection_);
 }

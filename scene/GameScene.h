@@ -8,10 +8,12 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include"ImGuiManager.h"
 #include<memory>
 class Player;
 class Skydome;
 class Ground;
+class FollowCamera;
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -52,7 +54,8 @@ private: // メンバ変数
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Skydome> skydome_;
 	std::unique_ptr<Ground> ground_;
-	/// <summary>
+	std::unique_ptr<FollowCamera> followcamera_;
+ 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
 };

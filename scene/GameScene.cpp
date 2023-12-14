@@ -4,6 +4,7 @@
 #include"Player.h"
 #include"Skydome.h"
 #include"Ground.h"
+#include"FollowCamera.h"
 
 GameScene::GameScene() {}
 
@@ -15,20 +16,45 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	viewProjection_.farZ = 2000;
-	viewProjection_.translation_.y = 5;
+	viewProjection_.translation_.y = 2;
 	viewProjection_.Initialize();
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize();
+
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
 
 	ground_ = std::make_unique<Ground>();
 	ground_->Initialize();
+
+	followcamera_ = std::make_unique<FollowCamera>();
+	followcamera_->Initialize();
+	
+	player_->SetViewProjection(&followcamera_->GetViewProjection());
+	followcamera_->SetTarget(&player_->GetWorldTransform());
+
+	
 }
 
-void GameScene::Update() {}
+void GameScene::Update() { 
+	
+	followcamera_->Update();
+
+	viewProjection_.matView = followcamera_->GetViewProjection().matView;
+	viewProjection_.matProjection = followcamera_->GetViewProjection().matProjection;
+	
+	viewProjection_.TransferMatrix();
+	/*viewProjection_.translation_ = followcamera_->GetViewProjection().translation_;
+	viewProjection_.rotation_ = followcamera_->GetViewProjection().rotation_;*/
+	player_->Update();
+	/*ground_->Update();
+	skydome_->Update();*/
+	/*viewProjection_.TransferMatrix();*/
+	
+	
+}
 
 void GameScene::Draw() {
 
@@ -57,7 +83,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	player_->Draw();
+	player_->Draw(viewProjection_);
 	skydome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
