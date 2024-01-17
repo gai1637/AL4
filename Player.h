@@ -15,6 +15,20 @@ private:
 	WorldTransform worldTransform_;
 	const ViewProjection* viewProjection_ = nullptr;
 
+	std::unique_ptr<Model> model_Head_ = nullptr;
+	WorldTransform worldTransform_Head_;
+	float Head_Lengh;
+	std::unique_ptr<Model> model_Body_ = nullptr;
+	WorldTransform worldTransform_Body_;
+	std::unique_ptr<Model> model_L_arm_ = nullptr;
+	WorldTransform worldTransform_L_arm_;
+	Vector3 L_Arm_Lengh;
+	std::unique_ptr<Model> model_R_arm_ = nullptr;
+	WorldTransform worldTransform_R_arm_;
+	Vector3 R_Arm_Lengh;
+
+	float floatingParameter_;
+
 public:
 	/// <summary>
 	/// デストラクタ
@@ -39,6 +53,8 @@ public:
 	void SetViewProjection(const ViewProjection* viewProjection) {
 		viewProjection_ = viewProjection;
 	}
+	void InitializeFloatingGimmick();
+	void UpdateFloatingGimmick();
 
 	const WorldTransform &GetWorldTransform() { return worldTransform_; }
 };
