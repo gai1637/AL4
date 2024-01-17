@@ -94,15 +94,15 @@ void Player::Update() {
 
 	worldTransform_Head_.translation_.x = worldTransform_Body_.translation_.x;
 	worldTransform_Head_.translation_.y = worldTransform_Body_.translation_.y + Head_Lengh;
-	worldTransform_Head_.translation_.x = worldTransform_Body_.translation_.x;
+	worldTransform_Head_.translation_.z = worldTransform_Body_.translation_.z;
 
 	worldTransform_L_arm_.translation_.x = worldTransform_Body_.translation_.x + L_Arm_Lengh.x;
 	worldTransform_L_arm_.translation_.y = worldTransform_Body_.translation_.y + L_Arm_Lengh.y;
-	worldTransform_L_arm_.translation_.z = worldTransform_Body_.translation_.x + L_Arm_Lengh.z;
+	worldTransform_L_arm_.translation_.z = worldTransform_Body_.translation_.z + L_Arm_Lengh.z;
 
 	worldTransform_R_arm_.translation_.x = worldTransform_Body_.translation_.x + R_Arm_Lengh.x;
 	worldTransform_R_arm_.translation_.y = worldTransform_Body_.translation_.y + R_Arm_Lengh.y;
-	worldTransform_R_arm_.translation_.z = worldTransform_Body_.translation_.x + R_Arm_Lengh.z;
+	worldTransform_R_arm_.translation_.z = worldTransform_Body_.translation_.z + R_Arm_Lengh.z;
 
 
 
