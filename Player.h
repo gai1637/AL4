@@ -9,30 +9,40 @@
 #include "WorldTransform.h"
 #include<memory>
 #include"BaseCharacter.h"
+#include<optional>
 class Player : public BaseCharacter{
 private:
 	enum {
 		Body,
 		Head,
 		L_arm,
-		R_arm
+		R_arm,
+		Hammer
 	};
-	
+	enum class Behavior {
+		kRoot,
+		kAttack,
+	};
+
+	Behavior behavior_ = Behavior::kRoot;
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
+
 	WorldTransform worldTransform_;
 	const ViewProjection* viewProjection_ = nullptr;
 
-	std::unique_ptr<Model> model_Body_ = nullptr;
+	
 	WorldTransform worldTransform_Body_;
-	std::unique_ptr<Model> model_Head_ = nullptr;
+	
 	WorldTransform worldTransform_Head_;
-	float Head_Lengh;
-	std::unique_ptr<Model> model_L_arm_ = nullptr;
+	
 	WorldTransform worldTransform_L_arm_;
-	Vector3 L_Arm_Lengh;
-	std::unique_ptr<Model> model_R_arm_ = nullptr;
+	
 	WorldTransform worldTransform_R_arm_;
-	Vector3 R_Arm_Lengh;
-
+	
+	WorldTransform worldTransform_Hammer_;
+	
+	
 	float floatingParameter_;
 
 public:
@@ -61,6 +71,11 @@ public:
 	}
 	void InitializeFloatingGimmick();
 	void UpdateFloatingGimmick();
+	void BehaviorRootUpdate();
+	void BehaviorAttackUpdate();
+	void BehaviorRootInitialize();
+	void BehaviorAttackInitialize();
+	
 
-	const WorldTransform &GetWorldTransform() { return worldTransform_; }
+	const WorldTransform &GetWorldTransform() { return worldTransform_Body_; }
 };

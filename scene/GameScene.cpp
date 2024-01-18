@@ -28,6 +28,8 @@ void GameScene::Initialize() {
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm",true));
 	modelFighterR_arm_=std::make_unique<Model>();
 	modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm",true));
+	modelFighterHammer_ = std::make_unique<Model>();
+	modelFighterHammer_.reset(Model::CreateFromOBJ("hammer", true));
 
 	modelEnemyBody_ = std::make_unique<Model>();
 	modelEnemyBody_.reset(Model::CreateFromOBJ("needle_Body", true));
@@ -41,7 +43,7 @@ void GameScene::Initialize() {
 	    modelFighterHead_.get(),
 	    modelFighterL_arm_.get(),
 	    modelFighterR_arm_.get(),
-
+		modelFighterHammer_.get()
 	};
 	std::vector<Model*> EnemyModels = {
 		
