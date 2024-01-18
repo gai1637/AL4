@@ -4,27 +4,32 @@
 #include<math.h>
 #include"MathUtilityForText.h"
 #include<imgui.h>
-void Player::Initialize() { 
+void Player::Initialize(const std::vector<Model*>& models) { 
 
-	model_ = std::make_unique<Model>();
-	model_.reset(Model::CreateFromOBJ("float",true));
-	worldTransform_.Initialize();
 	
-	model_Head_ = std::make_unique<Model>();
-	model_Head_.reset(Model::CreateFromOBJ("float_Head",true));
-	worldTransform_Head_.Initialize();
-	Head_Lengh = 1.4f;
-	model_Body_ = std::make_unique<Model>();
-	model_Body_.reset(Model::CreateFromOBJ("float_Body",true));
+	worldTransform_.Initialize();
+
+	
+	BaseCharacter::Initialize(models);
+	
 	worldTransform_Body_.Initialize();
-	model_L_arm_ = std::make_unique<Model>();
-	model_L_arm_.reset(Model::CreateFromOBJ("float_L_arm",true));
+	worldTransform_Body_.parent_ = &worldTransform_;
+	
+	worldTransform_Head_.Initialize();
+	worldTransform_Head_.parent_ = &worldTransform_Body_;
+
+	worldTransform_Head_.translation_ = {0.f,1.4f,0.0f};
+	
+	
 	worldTransform_L_arm_.Initialize();
-	L_Arm_Lengh = {-0.5f, 1.25f, 0.0f};
-	model_R_arm_ = std::make_unique<Model>();
-	model_R_arm_.reset(Model::CreateFromOBJ("float_R_arm",true));
+	worldTransform_L_arm_.parent_ = &worldTransform_Body_;
+	worldTransform_L_arm_.translation_= {-0.5f, 1.25f, 0.0f};
+
+	
 	worldTransform_R_arm_.Initialize();
-	R_Arm_Lengh = {0.5f, 1.25f, 0.0f};
+	worldTransform_R_arm_.parent_ = &worldTransform_Body_;
+	worldTransform_R_arm_.translation_ = {0.5f, 1.25f, 0.0f};
+
 	InitializeFloatingGimmick();
 }
 void Player::InitializeFloatingGimmick() {
@@ -66,7 +71,8 @@ void Player::Update() {
 
 		Vector3 move = {
 		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.0f,
-		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
+		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX
+		};
 		if (Length(move) > threshold) {
 			isMoving = true;
 		}
@@ -82,9 +88,9 @@ void Player::Update() {
 			}
 			worldTransform_Body_.translation_ += move;
 			worldTransform_Body_.rotation_.y = std::atan2(move.x, move.z);
-			worldTransform_Head_.rotation_.y=std::atan2(move.x, move.z);
+			/*worldTransform_Head_.rotation_.y=std::atan2(move.x, move.z);
 			worldTransform_L_arm_.rotation_.y=std::atan2(move.x, move.z);
-			worldTransform_R_arm_.rotation_.y=std::atan2(move.x, move.z);
+			worldTransform_R_arm_.rotation_.y=std::atan2(move.x, move.z);*/
 		}
 		/*const float kAngleInterRatio = 0.1f;*/
 		
@@ -92,7 +98,7 @@ void Player::Update() {
 
 	UpdateFloatingGimmick();
 
-	worldTransform_Head_.translation_.x = worldTransform_Body_.translation_.x;
+	/*worldTransform_Head_.translation_.x = worldTransform_Body_.translation_.x;
 	worldTransform_Head_.translation_.y = worldTransform_Body_.translation_.y + Head_Lengh;
 	worldTransform_Head_.translation_.x = worldTransform_Body_.translation_.x;
 
@@ -102,7 +108,7 @@ void Player::Update() {
 
 	worldTransform_R_arm_.translation_.x = worldTransform_Body_.translation_.x + R_Arm_Lengh.x;
 	worldTransform_R_arm_.translation_.y = worldTransform_Body_.translation_.y + R_Arm_Lengh.y;
-	worldTransform_R_arm_.translation_.z = worldTransform_Body_.translation_.x + R_Arm_Lengh.z;
+	worldTransform_R_arm_.translation_.z = worldTransform_Body_.translation_.x + R_Arm_Lengh.z;*/
 
 
 
@@ -114,8 +120,8 @@ void Player::Update() {
 }
 void Player::Draw(const ViewProjection &viewprojection) { 
 	/*model_->Draw(worldTransform_, viewprojection);*/
-	model_Head_->Draw(worldTransform_Head_, viewprojection);
-	model_Body_->Draw(worldTransform_Body_, viewprojection);
-	model_L_arm_->Draw(worldTransform_L_arm_, viewprojection);
-	model_R_arm_->Draw(worldTransform_R_arm_, viewprojection);
+	models_[Body]->Draw(worldTransform_Body_, viewprojection);
+	models_[Head]->Draw(worldTransform_Head_, viewprojection);
+	models_[L_arm]->Draw(worldTransform_L_arm_, viewprojection);
+	models_[R_arm]->Draw(worldTransform_R_arm_, viewprojection);
 }

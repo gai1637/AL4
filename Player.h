@@ -8,18 +8,24 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include<memory>
-class Player {
+#include"BaseCharacter.h"
+class Player : public BaseCharacter{
 private:
+	enum {
+		Body,
+		Head,
+		L_arm,
+		R_arm
+	};
 	
-	std::unique_ptr<Model> model_ = nullptr;
 	WorldTransform worldTransform_;
 	const ViewProjection* viewProjection_ = nullptr;
 
+	std::unique_ptr<Model> model_Body_ = nullptr;
+	WorldTransform worldTransform_Body_;
 	std::unique_ptr<Model> model_Head_ = nullptr;
 	WorldTransform worldTransform_Head_;
 	float Head_Lengh;
-	std::unique_ptr<Model> model_Body_ = nullptr;
-	WorldTransform worldTransform_Body_;
 	std::unique_ptr<Model> model_L_arm_ = nullptr;
 	WorldTransform worldTransform_L_arm_;
 	Vector3 L_Arm_Lengh;
@@ -38,12 +44,12 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize(const std::vector<Model*>& models)override;
 
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	void Update()override;
 
 	/// <summary>
 	/// 描画

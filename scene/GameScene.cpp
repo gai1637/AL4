@@ -5,6 +5,7 @@
 #include"Skydome.h"
 #include"Ground.h"
 #include"FollowCamera.h"
+#include"Enemy.h"
 
 GameScene::GameScene() {}
 
@@ -19,9 +20,42 @@ void GameScene::Initialize() {
 	viewProjection_.translation_.y = 2;
 	viewProjection_.Initialize();
 
-	player_ = std::make_unique<Player>();
-	player_->Initialize();
+	modelFighterBody_=std::make_unique<Model>();
+	modelFighterBody_.reset(Model::CreateFromOBJ("float_Body",true));
+	modelFighterHead_=std::make_unique<Model>();
+	modelFighterHead_.reset(Model::CreateFromOBJ("float_Head",true));
+	modelFighterL_arm_=std::make_unique<Model>();
+	modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm",true));
+	modelFighterR_arm_=std::make_unique<Model>();
+	modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm",true));
 
+	modelEnemyBody_ = std::make_unique<Model>();
+	modelEnemyBody_.reset(Model::CreateFromOBJ("needle_Body", true));
+	modelEnemyL_arm_ = std::make_unique<Model>();
+	modelEnemyL_arm_.reset(Model::CreateFromOBJ("needle_L_arm", true));
+	modelEnemyR_arm_ = std::make_unique<Model>();
+	modelEnemyR_arm_.reset(Model::CreateFromOBJ("needle_R_arm", true));
+
+	std::vector<Model*> playerModels = {
+	    modelFighterBody_.get(),
+	    modelFighterHead_.get(),
+	    modelFighterL_arm_.get(),
+	    modelFighterR_arm_.get(),
+
+	};
+	std::vector<Model*> EnemyModels = {
+		
+		modelEnemyBody_.get(), 
+		modelEnemyL_arm_.get(), 
+		modelEnemyR_arm_.get()
+	};
+
+
+	player_ = std::make_unique<Player>();
+	player_->Initialize(playerModels);
+
+	enemy_ = std::make_unique<Enemy>();
+	enemy_->Initialize(EnemyModels);
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
@@ -35,8 +69,7 @@ void GameScene::Initialize() {
 	player_->SetViewProjection(&followcamera_->GetViewProjection());
 	followcamera_->SetTarget(&player_->GetWorldTransform());
 
-	
-}
+	}
 
 void GameScene::Update() { 
 	
@@ -49,6 +82,7 @@ void GameScene::Update() {
 	/*viewProjection_.translation_ = followcamera_->GetViewProjection().translation_;
 	viewProjection_.rotation_ = followcamera_->GetViewProjection().rotation_;*/
 	player_->Update();
+	enemy_->Update();
 	/*ground_->Update();
 	skydome_->Update();*/
 	/*viewProjection_.TransferMatrix();*/
@@ -84,6 +118,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	player_->Draw(viewProjection_);
+	enemy_->Draw(viewProjection_);
 	skydome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
