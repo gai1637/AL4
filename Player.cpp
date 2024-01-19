@@ -151,6 +151,10 @@ void Player::BehaviorJumpUpdate() {
 		worldTransform_Body_.translation_.y = 0;
 		behaviorRequest_ = Behavior::kRoot;
 	}
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		
+	}
+		
 	if (joyState.Gamepad.wButtons&XINPUT_GAMEPAD_X) {
 		behaviorRequest_ = Behavior::kjumpAttack;
 	}
@@ -217,8 +221,7 @@ void Player::Update() {
 	break;
 	}
 
-	/*BehaviorAttackUpdate();*/
-	/*BehaviorRootUpdate();*/
+	
 	ImGui::Begin("a");
 	ImGui::SliderFloat("L_Arm_x",&worldTransform_Hammer_.translation_.x,-1.0f,1.0f);
 	ImGui::SliderFloat("L_Arm_y",&worldTransform_Hammer_.translation_.y,-1.0f,1.0f);
