@@ -22,6 +22,8 @@ private:
 	enum class Behavior {
 		kRoot,
 		kAttack,
+		kJump,
+		kjumpAttack,
 	};
 
 	Behavior behavior_ = Behavior::kRoot;
@@ -44,6 +46,10 @@ private:
 	
 	
 	float floatingParameter_;
+
+	Vector3 velocity_ = {};
+
+	XINPUT_STATE joyState; 
 
 public:
 	/// <summary>
@@ -75,7 +81,11 @@ public:
 	void BehaviorAttackUpdate();
 	void BehaviorRootInitialize();
 	void BehaviorAttackInitialize();
-	
+	void BehaviorJumpInitialize();
+	void BehaviorJumpUpdate();
+	void BehaviorJumpAttackInitialize();
+	void BehaviorJumpAttackUpdate();
+
 
 	const WorldTransform &GetWorldTransform() { return worldTransform_Body_; }
 };

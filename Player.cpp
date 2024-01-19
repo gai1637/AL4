@@ -62,32 +62,32 @@ Player::~Player() {
 }
 void Player::BehaviorRootUpdate() {
 	
-	XINPUT_STATE joyState; 
+
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		const float speed = 0.3f;
 		const float threshold = 0.7f;
 		bool isMoving = false;
 
 
-		Vector3 move = {
+		velocity_ = {
 		    (float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0.0f,
 		    (float)joyState.Gamepad.sThumbLY / SHRT_MAX
 		};
-		if (Length(move) > threshold) {
+		if (Length(velocity_) > threshold) {
 			isMoving = true;
 		}
 		if (isMoving) {
-			move = Normalize(move) * speed;
+			velocity_ = Normalize(velocity_) * speed;
 			if (viewProjection_) {
 				Matrix4x4 matRotX = MakeRotateXMatrix(viewProjection_->rotation_.x);
 				Matrix4x4 matRotY = MakeRotateYMatrix(viewProjection_->rotation_.y);
 				Matrix4x4 matRotZ = MakeRotateZMatrix(viewProjection_->rotation_.z);
 				Matrix4x4 matRot = matRotZ * matRotX * matRotY;
 
-				move = TransformNormal(move, matRot);
+				velocity_ = TransformNormal(velocity_, matRot);
 			}
-			worldTransform_Body_.translation_ += move;
-			worldTransform_Body_.rotation_.y = std::atan2(move.x, move.z);
+			worldTransform_Body_.translation_ += velocity_;
+			worldTransform_Body_.rotation_.y = std::atan2(velocity_.x, velocity_.z);
 			/*worldTransform_Head_.rotation_.y=std::atan2(move.x, move.z);
 			worldTransform_L_arm_.rotation_.y=std::atan2(move.x, move.z);
 			worldTransform_R_arm_.rotation_.y=std::atan2(move.x, move.z);*/
@@ -113,6 +113,9 @@ void Player::BehaviorRootUpdate() {
 	if (joyState.Gamepad.wButtons&XINPUT_GAMEPAD_X) {
 		behaviorRequest_ = Behavior::kAttack;
 	}
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
+		behaviorRequest_ = Behavior::kJump;
+	}
 
 }
 void Player::BehaviorAttackUpdate() { 
@@ -132,6 +135,45 @@ void Player::BehaviorAttackInitialize() {
 	worldTransform_L_arm_.rotation_.x = -3.5f; 
 	worldTransform_R_arm_.rotation_.x = -3.5f; 
 }
+void Player::BehaviorJumpInitialize() { 
+	worldTransform_Body_.translation_.y = 0;
+	worldTransform_L_arm_.rotation_.x = 0;
+	worldTransform_R_arm_.rotation_.x = 0;
+	const float kJumpFirstSpeed = 1.0f;
+	velocity_.y =kJumpFirstSpeed;
+}
+void Player::BehaviorJumpUpdate() {
+	worldTransform_Body_.translation_ += velocity_;
+	const float kGravityAccleration = 0.05f;
+	Vector3 accelerationVector = {0, -kGravityAccleration, 0};
+	velocity_ += accelerationVector;
+	if (worldTransform_Body_.translation_.y <= 0.0f) {
+		worldTransform_Body_.translation_.y = 0;
+		behaviorRequest_ = Behavior::kRoot;
+	}
+	if (joyState.Gamepad.wButtons&XINPUT_GAMEPAD_X) {
+		behaviorRequest_ = Behavior::kjumpAttack;
+	}
+}
+void Player::BehaviorJumpAttackInitialize() { 
+	worldTransform_L_arm_.rotation_.x = -3.5f; 
+	worldTransform_R_arm_.rotation_.x = -3.5f; 
+}
+void Player::BehaviorJumpAttackUpdate() {
+	worldTransform_Body_.translation_ += velocity_;
+	const float kGravityAccleration = 0.05f;
+	Vector3 accelerationVector = {0, -kGravityAccleration, 0};
+	velocity_ += accelerationVector;
+	if (worldTransform_L_arm_.rotation_.x <= -1.5f) {
+		worldTransform_L_arm_.rotation_.x += 0.1f;
+		worldTransform_R_arm_.rotation_.x += 0.1f;
+	} 
+	if (worldTransform_Body_.translation_.y <= 0.0f) {
+		worldTransform_Body_.translation_.y = 0;
+		behaviorRequest_ = Behavior::kRoot;
+	}
+	
+}
 
 void Player::Update() { 
 	
@@ -148,6 +190,12 @@ void Player::Update() {
 	BehaviorAttackInitialize();
 	
 	break;
+	case Behavior::kJump:
+	BehaviorJumpInitialize();
+	break;
+	case Behavior::kjumpAttack:
+	BehaviorJumpAttackInitialize();
+	break;
 	}
 	behaviorRequest_ = std::nullopt;
 	}
@@ -160,6 +208,12 @@ void Player::Update() {
 	case Behavior::kAttack:
 	
 	BehaviorAttackUpdate();
+	break;
+	case Behavior::kJump:
+	BehaviorJumpUpdate();
+	break;
+	case Behavior::kjumpAttack:
+	BehaviorJumpAttackUpdate();
 	break;
 	}
 
@@ -178,8 +232,8 @@ void Player::Update() {
 	ImGui::End();
 
 	worldTransform_.UpdateMatrix();
-	worldTransform_Head_.UpdateMatrix();
 	worldTransform_Body_.UpdateMatrix();
+	worldTransform_Head_.UpdateMatrix();
 	worldTransform_L_arm_.UpdateMatrix();
 	worldTransform_R_arm_.UpdateMatrix();
 	worldTransform_Hammer_.UpdateMatrix();
@@ -190,5 +244,6 @@ void Player::Draw(const ViewProjection &viewprojection) {
 	models_[Head]->Draw(worldTransform_Head_, viewprojection);
 	models_[L_arm]->Draw(worldTransform_L_arm_, viewprojection);
 	models_[R_arm]->Draw(worldTransform_R_arm_, viewprojection);
+	if (behavior_==Behavior::kAttack||behavior_==Behavior::kjumpAttack)
 	models_[Hammer]->Draw(worldTransform_Hammer_, viewprojection);
 }
