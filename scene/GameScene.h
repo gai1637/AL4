@@ -10,11 +10,13 @@
 #include "WorldTransform.h"
 #include"ImGuiManager.h"
 #include<memory>
+#include<list>
 class Player;
 class Skydome;
 class Ground;
 class FollowCamera;
 class Enemy;
+class CollisionManager;
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -46,6 +48,8 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	void CheckAllCollisions();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -57,6 +61,7 @@ private: // メンバ変数
 	std::unique_ptr<Ground> ground_;
 	std::unique_ptr<FollowCamera> followcamera_;
 	std::unique_ptr<Enemy> enemy_;
+	std::list<std::unique_ptr<Enemy>> enemies_;
 	//プレイヤーモデル
 	std::unique_ptr<Model> modelFighterBody_;
 	std::unique_ptr<Model> modelFighterHead_;
@@ -68,6 +73,7 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelEnemyL_arm_;
 	std::unique_ptr<Model> modelEnemyR_arm_;
 
+	std::unique_ptr<CollisionManager> collisionManager_;
 
 	/// <summary>
 	/// ゲームシーン用

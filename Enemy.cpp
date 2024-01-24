@@ -36,3 +36,8 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 	models_[L_arm]->Draw(worldTransform_L_arm_, viewProjection);
 	models_[R_arm]->Draw(worldTransform_R_arm_, viewProjection);
 }
+Vector3 Enemy::GetCenterPosition() const { 
+	const Vector3 offset = {0.0f, 1.5f, 0.0f};
+	Vector3 worldPos = Transform(offset, worldTransform_.matWorld_);
+	return worldPos;
+}

@@ -85,7 +85,10 @@ public:
 	void BehaviorJumpUpdate();
 	void BehaviorJumpAttackInitialize();
 	void BehaviorJumpAttackUpdate();
+	void OnCollision() override;
 
 
 	const WorldTransform &GetWorldTransform() { return worldTransform_Body_; }
+
+	Vector3 GetCenterPosition() const override;
 };

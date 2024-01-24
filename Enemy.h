@@ -15,6 +15,7 @@ public:
 	
 	void Update()override;
 	void Draw(const ViewProjection& viewProjection)override;
+	Vector3 GetCenterPosition() const override;
 
 private:
 	enum{

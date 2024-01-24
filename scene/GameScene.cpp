@@ -6,10 +6,12 @@
 #include"Ground.h"
 #include"FollowCamera.h"
 #include"Enemy.h"
-
+#include"CollisionManager.h"
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {  }
+GameScene::~GameScene() { 
+	
+}
 
 void GameScene::Initialize() {
 
@@ -56,8 +58,9 @@ void GameScene::Initialize() {
 	player_ = std::make_unique<Player>();
 	player_->Initialize(playerModels);
 
-	enemy_ = std::make_unique<Enemy>();
+	enemy_ =std::make_unique<Enemy>();
 	enemy_->Initialize(EnemyModels);
+	enemies_.push_back(enemy_);
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
@@ -70,7 +73,9 @@ void GameScene::Initialize() {
 	
 	player_->SetViewProjection(&followcamera_->GetViewProjection());
 	followcamera_->SetTarget(&player_->GetWorldTransform());
-
+	
+	collisionManager_ = std::make_unique<CollisionManager>();
+	
 	}
 
 void GameScene::Update() { 
@@ -84,11 +89,18 @@ void GameScene::Update() {
 	/*viewProjection_.translation_ = followcamera_->GetViewProjection().translation_;
 	viewProjection_.rotation_ = followcamera_->GetViewProjection().rotation_;*/
 	player_->Update();
-	enemy_->Update();
+	
+	for (const std::unique_ptr<Enemy>& enemy : enemies_) {
+	enemy->Update();
+	}
+	
+	
+	
+	
 	/*ground_->Update();
 	skydome_->Update();*/
 	/*viewProjection_.TransferMatrix();*/
-	
+	CheckAllCollisions();
 	
 }
 
@@ -139,4 +151,13 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+void GameScene::CheckAllCollisions() { 
+	collisionManager_->Reset();
+	collisionManager_->AddCollider(player_.get());
+	for (const std::unique_ptr<Enemy>& enemy : enemies_) {
+	collisionManager_->AddCollider(enemy.get());
+	
+	}
+	collisionManager_->CheckAllCollisions();
 }
