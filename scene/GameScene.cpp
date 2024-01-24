@@ -60,7 +60,7 @@ void GameScene::Initialize() {
 
 	enemy_ =std::make_unique<Enemy>();
 	enemy_->Initialize(EnemyModels);
-	enemies_.push_back(enemy_);
+	enemies_.push_back(std::move(enemy_));
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
@@ -132,7 +132,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	player_->Draw(viewProjection_);
-	enemy_->Draw(viewProjection_);
+	for (const std::unique_ptr<Enemy>& enemy : enemies_) {
+	enemy->Draw(viewProjection_);
+	}
 	skydome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
