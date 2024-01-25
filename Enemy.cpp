@@ -13,6 +13,8 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 	worldTransform_R_arm_.Initialize();
 	worldTransform_R_arm_.parent_ = &worldTransform_;
 	worldTransform_R_arm_.translation_ = {0.8f, 1.0f, 0.0f};
+	Collider::SetTypeID(static_cast<uint32_t>(CollisionTypeIDef::kEnemy));
+
 }
 void Enemy::Update() {
 	

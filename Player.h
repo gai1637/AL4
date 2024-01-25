@@ -10,6 +10,8 @@
 #include<memory>
 #include"BaseCharacter.h"
 #include<optional>
+#include"Hammer.h"
+class Hammer;
 class Player : public BaseCharacter{
 private:
 	enum {
@@ -17,7 +19,7 @@ private:
 		Head,
 		L_arm,
 		R_arm,
-		Hammer
+		Hammer_
 	};
 	enum class Behavior {
 		kRoot,
@@ -29,6 +31,7 @@ private:
 	Behavior behavior_ = Behavior::kRoot;
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 
+	std::unique_ptr<Hammer> hammer_;
 
 	WorldTransform worldTransform_;
 	const ViewProjection* viewProjection_ = nullptr;
@@ -85,10 +88,11 @@ public:
 	void BehaviorJumpUpdate();
 	void BehaviorJumpAttackInitialize();
 	void BehaviorJumpAttackUpdate();
-	void OnCollision() override;
+	void OnCollision([[maybe_unused]]Collider* other) override;
 
 
 	const WorldTransform &GetWorldTransform() { return worldTransform_Body_; }
 
 	Vector3 GetCenterPosition() const override;
+	const std::unique_ptr<Hammer>& GetHammer() const { return hammer_; }
 };

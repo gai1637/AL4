@@ -113,9 +113,11 @@
     <ClCompile Include="base\WinApp.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="CollisionTypeIDef.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="Hammer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathUtilityForText.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -150,9 +152,11 @@
     <ClInclude Include="base\WinApp.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="CollisionTypeIDef.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Ground.h" />
+    <ClInclude Include="Hammer.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="MathUtilityForText.h" />
     <ClInclude Include="math\Matrix4x4.h" />

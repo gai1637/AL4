@@ -31,11 +31,14 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransform_R_arm_.parent_ = &worldTransform_Body_;
 	worldTransform_R_arm_.translation_ = {0.5f, 1.25f, 0.0f};
 
+	hammer_ = std::make_unique<Hammer>();
+	hammer_->Initialize();
 	worldTransform_Hammer_.Initialize();
-	worldTransform_Hammer_.parent_ = &worldTransform_L_arm_;
+	hammer_->GetWorldTransfoem().parent_ = &worldTransform_L_arm_;
 	worldTransform_Hammer_.rotation_ = {0.3f, -3.14f, -3.126f};
 	worldTransform_Hammer_.translation_ = {0.5f, 0.f, 0.0f};
-
+	hammer_->SetTranslation(worldTransform_Hammer_.translation_); 
+	hammer_->SetRotation({0.3f, -3.14f, -3.126f});
 
 	InitializeFloatingGimmick();
 }
@@ -134,6 +137,7 @@ void Player::BehaviorRootInitialize() {
 void Player::BehaviorAttackInitialize() {
 	worldTransform_L_arm_.rotation_.x = -3.5f; 
 	worldTransform_R_arm_.rotation_.x = -3.5f; 
+	hammer_->SetTranslation(worldTransform_Hammer_.translation_);
 }
 void Player::BehaviorJumpInitialize() { 
 	worldTransform_Body_.translation_.y = 0;
@@ -240,6 +244,7 @@ void Player::Update() {
 	worldTransform_L_arm_.UpdateMatrix();
 	worldTransform_R_arm_.UpdateMatrix();
 	worldTransform_Hammer_.UpdateMatrix();
+	hammer_->Update();
 }
 void Player::Draw(const ViewProjection &viewprojection) { 
 	/*model_->Draw(worldTransform_, viewprojection);*/
@@ -248,11 +253,11 @@ void Player::Draw(const ViewProjection &viewprojection) {
 	models_[L_arm]->Draw(worldTransform_L_arm_, viewprojection);
 	models_[R_arm]->Draw(worldTransform_R_arm_, viewprojection);
 	if (behavior_==Behavior::kAttack||behavior_==Behavior::kjumpAttack)
-	models_[Hammer]->Draw(worldTransform_Hammer_, viewprojection);
+	models_[Hammer_]->Draw(hammer_->GetWorldTransfoem(), viewprojection);
 }
 Vector3 Player::GetCenterPosition() const { 
 	const Vector3 offset = {0.0f, 1.5f, 0.0f};
 	Vector3 worldPos = Transform(offset, worldTransform_Body_.matWorld_);
 	return worldPos;
 }
-void Player::OnCollision() { behaviorRequest_ = Behavior::kJump; }
+void Player::OnCollision([[maybe_unused]]Collider* other) { behaviorRequest_ = Behavior::kJump; }

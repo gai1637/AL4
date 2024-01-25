@@ -9,8 +9,8 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	Vector3 subtract = colliderB_ - colliderA_;
 	float distance = Length(subtract);
 	if (distance <= 1.5f) {
-		colliderA->OnCollision();
-		colliderB->OnCollision();
+		colliderA->OnCollision(colliderB);
+		colliderB->OnCollision(colliderA);
 	}
 }
 void CollisionManager::CheckAllCollisions() {
@@ -28,7 +28,7 @@ void CollisionManager::CheckAllCollisions() {
 void CollisionManager::AddCollider(Collider* collider) { colliders_.push_back(collider); }
 void CollisionManager::Initialize() { 
 	model_sphere_ = std::make_unique<Model>();
-	model_sphere_.reset(Model::CreateFromOBJ("ICO球", true));
+	model_sphere_.reset(Model::CreateFromOBJ("ICO", true));
 
 }
 void CollisionManager::UpdateWorldTransform() {

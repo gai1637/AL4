@@ -164,5 +164,7 @@ void GameScene::CheckAllCollisions() {
 	collisionManager_->AddCollider(enemy.get());
 	
 	}
+	collisionManager_->AddCollider(player_->GetHammer().get());
 	collisionManager_->CheckAllCollisions();
+	
 }
