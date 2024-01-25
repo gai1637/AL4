@@ -75,6 +75,7 @@ void GameScene::Initialize() {
 	followcamera_->SetTarget(&player_->GetWorldTransform());
 	
 	collisionManager_ = std::make_unique<CollisionManager>();
+	collisionManager_->Initialize();
 	
 	}
 
@@ -100,6 +101,7 @@ void GameScene::Update() {
 	/*ground_->Update();
 	skydome_->Update();*/
 	/*viewProjection_.TransferMatrix();*/
+	collisionManager_->UpdateWorldTransform();
 	CheckAllCollisions();
 	
 }
@@ -137,6 +139,7 @@ void GameScene::Draw() {
 	}
 	skydome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
+	collisionManager_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

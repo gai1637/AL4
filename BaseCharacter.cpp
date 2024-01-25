@@ -3,6 +3,7 @@ void BaseCharacter::Initialize(const std::vector<Model*>& models) {
 
 	models_ = models;
 	worldTransform_.Initialize();
+	Collider::Initialize();
 }
 void BaseCharacter::Update() {
 
@@ -14,6 +15,7 @@ void BaseCharacter::Draw(const ViewProjection& viewProjection) {
 	for (Model* model : models_) {
 		model->Draw(worldTransform_, viewProjection);
 	}
+	
 }
 Vector3  BaseCharacter::GetCenterPosition()const {
 	Vector3 worldPos;
