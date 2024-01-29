@@ -47,13 +47,15 @@ void GameScene::Initialize() {
 	    modelFighterR_arm_.get(),
 		modelFighterHammer_.get()
 	};
-	std::vector<Model*> EnemyModels = {
+	EnemyModels = {
 		
 		modelEnemyBody_.get(), 
 		modelEnemyL_arm_.get(), 
 		modelEnemyR_arm_.get()
 	};
 
+	enemyCounter_ = 0;
+	MaxenemyCounter = 1;
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(playerModels);
@@ -61,6 +63,7 @@ void GameScene::Initialize() {
 	enemy_ =std::make_unique<Enemy>();
 	enemy_->Initialize(EnemyModels);
 	enemies_.push_back(std::move(enemy_));
+
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize();
@@ -103,7 +106,7 @@ void GameScene::Update() {
 	/*viewProjection_.TransferMatrix();*/
 	collisionManager_->UpdateWorldTransform();
 	CheckAllCollisions();
-	
+	EnemySpoon();
 }
 
 void GameScene::Draw() {
@@ -167,4 +170,21 @@ void GameScene::CheckAllCollisions() {
 	collisionManager_->AddCollider(player_->GetHammer().get());
 	collisionManager_->CheckAllCollisions();
 	
+}
+void GameScene::EnemySpoon() {
+	enemies_.remove_if([](std::unique_ptr<Enemy> enemy) {
+		if (enemy->GetReset()) {
+			
+			return true;
+		}
+		return false;
+	});
+	if (enemies_.size() <= 0) {
+	MaxenemyCounter++;
+	for (uint32_t i = 0; i < MaxenemyCounter; i++) {
+		std::unique_ptr<Enemy> enemy;
+		enemy->Initialize(EnemyModels);
+		enemies_.push_back(std::move(enemy));
+	}
+	}
 }

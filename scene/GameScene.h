@@ -49,6 +49,7 @@ public: // メンバ関数
 	void Draw();
 
 	void CheckAllCollisions();
+	void EnemySpoon();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -72,8 +73,12 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelEnemyBody_;
 	std::unique_ptr<Model> modelEnemyL_arm_;
 	std::unique_ptr<Model> modelEnemyR_arm_;
-
+	std::vector<Model*> EnemyModels;
 	std::unique_ptr<CollisionManager> collisionManager_;
+
+	uint32_t enemyCounter_;
+	uint32_t MaxenemyCounter;
+
 
 	/// <summary>
 	/// ゲームシーン用

@@ -16,6 +16,8 @@ public:
 	void Update()override;
 	void Draw(const ViewProjection& viewProjection)override;
 	Vector3 GetCenterPosition() const override;
+	void Reset(bool flag_) { ResetFlag_ = flag_; }
+	bool GetReset() const { return ResetFlag_; }
 
 private:
 	enum{
@@ -27,5 +29,5 @@ private:
 	Vector3 L_arm_Lengh;
 	WorldTransform worldTransform_R_arm_;
 	Vector3 R_arm_Lengh;
-
+	bool ResetFlag_=false;
 };
