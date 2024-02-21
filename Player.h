@@ -54,6 +54,8 @@ private:
 
 	XINPUT_STATE joyState; 
 
+	int life;
+
 public:
 	/// <summary>
 	/// デストラクタ
@@ -95,4 +97,6 @@ public:
 
 	Vector3 GetCenterPosition() const override;
 	const std::unique_ptr<Hammer>& GetHammer() const { return hammer_; }
+
+	int GetLife() { return life; }
 };

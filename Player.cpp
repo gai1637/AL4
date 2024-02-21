@@ -3,7 +3,7 @@
 #include <cassert>
 #include<math.h>
 #include"MathUtilityForText.h"
-#include<imgui.h>
+
 
 void Player::Initialize(const std::vector<Model*>& models) { 
 
@@ -41,6 +41,7 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	hammer_->SetRotation({0.3f, -3.14f, -3.126f});
 
 	InitializeFloatingGimmick();
+	life = 3;
 }
 void Player::InitializeFloatingGimmick() {
 
@@ -91,11 +92,9 @@ void Player::BehaviorRootUpdate() {
 			}
 			worldTransform_Body_.translation_ += velocity_;
 			worldTransform_Body_.rotation_.y = std::atan2(velocity_.x, velocity_.z);
-			/*worldTransform_Head_.rotation_.y=std::atan2(move.x, move.z);
-			worldTransform_L_arm_.rotation_.y=std::atan2(move.x, move.z);
-			worldTransform_R_arm_.rotation_.y=std::atan2(move.x, move.z);*/
+			
 		}
-		/*const float kAngleInterRatio = 0.1f;*/
+		
 		
 	}
 
@@ -226,17 +225,7 @@ void Player::Update() {
 	}
 
 	
-	ImGui::Begin("a");
-	ImGui::SliderFloat("L_Arm_x",&worldTransform_Hammer_.translation_.x,-1.0f,1.0f);
-	ImGui::SliderFloat("L_Arm_y",&worldTransform_Hammer_.translation_.y,-1.0f,1.0f);
-	ImGui::SliderFloat("L_Arm_z",&worldTransform_Hammer_.translation_.z,-1.0f,1.0f);
-	ImGui::SliderFloat("rotation_x",&worldTransform_Hammer_.rotation_.x,-0.0f,2.0f);
-	ImGui::SliderFloat("rotation_y",&worldTransform_Hammer_.rotation_.y,-3.5f,0.0f);
-	ImGui::SliderFloat("rotation_z",&worldTransform_Hammer_.rotation_.z,-3.5f,0.0f);
 	
-
-
-	ImGui::End();
 
 	worldTransform_.UpdateMatrix();
 	worldTransform_Body_.UpdateMatrix();
@@ -260,4 +249,10 @@ Vector3 Player::GetCenterPosition() const {
 	Vector3 worldPos = Transform(offset, worldTransform_Body_.matWorld_);
 	return worldPos;
 }
-void Player::OnCollision([[maybe_unused]]Collider* other) { behaviorRequest_ = Behavior::kJump; }
+void Player::OnCollision([[maybe_unused]]Collider* other) { 
+	
+	life--;
+	
+	behaviorRequest_ = Behavior::kJump;
+	
+}

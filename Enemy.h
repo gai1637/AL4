@@ -18,6 +18,7 @@ public:
 	Vector3 GetCenterPosition() const override;
 	void Reset(bool flag_) { ResetFlag_ = flag_; }
 	bool GetReset() const { return ResetFlag_; }
+	void SetPos(const Vector3 pos) { worldTransform_.translation_ = pos; }
 
 private:
 	enum{

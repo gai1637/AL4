@@ -11,12 +11,20 @@
 #include"ImGuiManager.h"
 #include<memory>
 #include<list>
+enum SCENE {
+	TITLE,
+	GAME,
+	CLERA
+};
 class Player;
 class Skydome;
 class Ground;
 class FollowCamera;
 class Enemy;
 class CollisionManager;
+class Title;
+class Fade;
+class Clear;
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -42,6 +50,8 @@ public: // メンバ関数
 	/// 毎フレーム処理
 	/// </summary>
 	void Update();
+	void TitleUpdate();
+	void GameUpdate();
 
 	/// <summary>
 	/// 描画
@@ -79,7 +89,11 @@ private: // メンバ変数
 	uint32_t enemyCounter_;
 	uint32_t MaxenemyCounter;
 
-
+	SCENE scene;
+	unsigned int enemycount_;
+	std::unique_ptr<Title> title_;
+	std::unique_ptr<Fade> Fade_;
+	std::unique_ptr<Clear> clear_;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

@@ -7,6 +7,9 @@
 #include"FollowCamera.h"
 #include"Enemy.h"
 #include"CollisionManager.h"
+#include"Title.h"
+#include"Fade.h"
+#include"Clear.h"
 GameScene::GameScene() {}
 
 GameScene::~GameScene() { 
@@ -80,10 +83,41 @@ void GameScene::Initialize() {
 	collisionManager_ = std::make_unique<CollisionManager>();
 	collisionManager_->Initialize();
 	
+	scene = TITLE;
+
+	title_ = std::make_unique<Title>();
+	title_->Initialize();
+
+	Fade_ = std::make_unique<Fade>();
+	Fade_->Initialize();
+
+	clear_ = std::make_unique<Clear>();
+	clear_->Initialize();
+
 	}
 
 void GameScene::Update() { 
-	
+	switch (scene) {
+	case TITLE:
+		title_->Update();
+		if (input_->TriggerKey(DIK_SPACE)) {
+			scene = GAME;
+		}
+		break;
+	case GAME:
+		Fade_->Update();
+		GameUpdate();
+		break;
+	case CLERA:
+		if (input_->TriggerKey(DIK_SPACE)) {
+			scene = TITLE;
+		}
+		break;
+	}
+
+}
+
+void GameScene::GameUpdate() {
 	followcamera_->Update();
 
 	viewProjection_.matView = followcamera_->GetViewProjection().matView;
@@ -107,8 +141,16 @@ void GameScene::Update() {
 	collisionManager_->UpdateWorldTransform();
 	CheckAllCollisions();
 	EnemySpoon();
+	if (Fade_->GetColor() >= 1 && Fade_->Getfalg()) {
+	scene = CLERA;
+	Fade_->Setflag(false);
+	}
 }
-
+void GameScene::TitleUpdate() {
+	if (input_->TriggerKey(DIK_SPACE)) {
+	scene = GAME;
+	}
+}
 void GameScene::Draw() {
 
 	// コマンドリストの取得
@@ -136,13 +178,26 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	player_->Draw(viewProjection_);
-	for (const std::unique_ptr<Enemy>& enemy : enemies_) {
+	switch (scene) {
+	case TITLE:
+
+	break;
+	case GAME:
+		player_->Draw(viewProjection_);
+	for (std::unique_ptr<Enemy>& enemy : enemies_) {
 	enemy->Draw(viewProjection_);
 	}
 	skydome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
-	collisionManager_->Draw(viewProjection_);
+	break;
+	case CLERA:
+	
+	break;
+
+	default:
+	break;
+	}
+	/*collisionManager_->Draw(viewProjection_);*/
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -151,6 +206,20 @@ void GameScene::Draw() {
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
 
+	switch (scene) {
+	case TITLE:
+	title_->Draw();
+	break;
+	case GAME:
+	Fade_->Draw();
+	break;
+	case CLERA:
+		clear_->Draw();
+	break;
+
+	default:
+	break;
+	}
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
@@ -171,20 +240,20 @@ void GameScene::CheckAllCollisions() {
 	collisionManager_->CheckAllCollisions();
 	
 }
-void GameScene::EnemySpoon() {
-	enemies_.remove_if([](std::unique_ptr<Enemy> enemy) {
-		if (enemy->GetReset()) {
-			
-			return true;
-		}
-		return false;
-	});
-	if (enemies_.size() <= 0) {
-	MaxenemyCounter++;
-	for (uint32_t i = 0; i < MaxenemyCounter; i++) {
-		std::unique_ptr<Enemy> enemy;
-		enemy->Initialize(EnemyModels);
-		enemies_.push_back(std::move(enemy));
+void GameScene::EnemySpoon() { 
+	for (std::unique_ptr<Enemy>& enemy : enemies_) {
+	if (enemy->GetReset()) {
+		enemy->SetPos({
+			static_cast<float>(rand() % 100),
+			0,
+			static_cast<float>(rand() % 100),
+		});
+		enemy->Reset(false);
+		enemycount_++;
 	}
+	}
+	if (enemycount_ >= 1) {
+	Fade_->Setflag(true);
+	enemycount_ = 0;
 	}
 }

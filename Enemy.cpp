@@ -4,8 +4,9 @@
 #include <cassert>
 #include<math.h>
 #include"MathUtilityForText.h"
-#include<imgui.h>
+
 void Enemy::Initialize(const std::vector<Model*>& models) { 
+	worldTransform_.translation_ = {10, 0, 10};
 	BaseCharacter::Initialize(models);
 	worldTransform_L_arm_.Initialize();
 	worldTransform_L_arm_.parent_ = &worldTransform_;
